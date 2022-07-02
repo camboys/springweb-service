@@ -1,5 +1,7 @@
 package com.camboys.springboot.web;
 
+import com.camboys.springboot.config.auth.LoginUser;
+import com.camboys.springboot.config.auth.dto.SessionUser;
 import com.camboys.springboot.service.posts.PostsService;
 import com.camboys.springboot.web.dto.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -9,14 +11,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
+import javax.servlet.http.HttpSession;
+
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
     private final PostsService postsService;
 
+
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc());
+
+        if (user != null) {
+            model.addAttribute("googleName", user.getName());
+        }
         return "index";
     }
 
